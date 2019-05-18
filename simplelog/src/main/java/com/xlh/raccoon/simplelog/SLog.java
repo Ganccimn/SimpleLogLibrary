@@ -2,145 +2,95 @@ package com.xlh.raccoon.simplelog;
 
 import android.util.Log;
 
-import java.util.List;
-import java.util.Map;
+import com.xlh.raccoon.simplelog.config.SLogConfig;
+import com.xlh.raccoon.simplelog.config.SLogConfiguration;
+import com.xlh.raccoon.simplelog.constant.SLogStatusEnum;
+import com.xlh.raccoon.simplelog.core.DebugSLogMethod;
+import com.xlh.raccoon.simplelog.core.ReleaseSLogMethod;
+import com.xlh.raccoon.simplelog.core.SLogMethod;
 
+/**
+ * 主类。
+ */
 public class SLog {
-  /**
-   * @param msg 打印字符串
-   */
-  public static void print(String msg) {
-    Log.i(buildLogPosition().getFilePositionString(), msg);
-  }
 
   /**
-   * 打印int数组
-   *
-   * @param arr
+   * SLog 配置类。
    */
-  public static void print(int[] arr) {
-    StringBuffer sb = new StringBuffer();
-    sb.append("[ ");
-    for (int item : arr) {
-      sb.append(item);
-      sb.append(" , ");
-    }
-    sb.setLength(sb.length() - 3);
-    sb.append(" ]");
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
-  }
+  public static SLogConfiguration sLogConfiguration = new SLogConfiguration();
+  /**
+   * SLog 方法类。
+   */
+  public static SLogMethod out = new DebugSLogMethod();
 
   /**
-   * 打印二维int数组
+   * 初始化 SLogConfig 配置信息
+   * 根据环境和配置实例化 SLogMethod。
    *
-   * @param arr
+   * @param sLogConfig
    */
-  public static void print(int[][] arr) {
-    StringBuffer sb = new StringBuffer("---👇---\n");
-    for (int[] row : arr) {
-      sb.append("[ ");
-      for (int col : row) {
-        sb.append(col);
-        sb.append(" , ");
-      }
-      sb.setLength(sb.length() - 3);
-      sb.append(" ]\n");
-    }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
-  }
-
-  /**
-   * 打印集合。
-   *
-   * @param list
-   * @param listTypeEnum
-   */
-  public static void print(List list, ListTypeEnum listTypeEnum) {
-    if (listTypeEnum.flag == ListTypeEnum.NORMAL.flag) {
-      Log.i(buildLogPosition().getFilePositionString(), list.toString());
-    }
-  }
-
-  /**
-   * 打印集合。
-   *
-   * @param map
-   * @param mapTypeEnum
-   */
-  public static void print(Map map, MapTypeEnum mapTypeEnum) {
-    if (mapTypeEnum == MapTypeEnum.TABLE) {
-      printMapTable(map);
+  public static void init(SLogConfig sLogConfig) {
+    if (sLogConfig != null) {
+      sLogConfig.config(sLogConfiguration);
+      config();
     } else {
-      Log.i(buildLogPosition().getFilePositionString(), map.toString());
+      out = getReleaseInstance();
+      Log.e(SLog.class.getSimpleName(), "init: SLog 未配置！");
     }
   }
 
   /**
-   * 打印异常
-   *
-   * @param ex
+   * 读取配置信息。
    */
-  public static void print(Exception ex) {
-    print(ex.getMessage());
-  }
-
-  private static void printMapTable(Map<Object, Object> map) {
-    StringBuffer sb = new StringBuffer("---👇---\n");
-    for (Map.Entry<Object, Object> entry : map.entrySet()) {
-      sb.append("[ ");
-      sb.append(entry.getKey());
-      sb.append(" | ");
-      sb.append(entry.getValue());
-      sb.append(" ]\n");
+  private static void config() {
+    if (sLogConfiguration == null) {
+      out = getDebugInstance();
+      return;
     }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
-  }
-
-  /**
-   * 例如：[1:abcd] [2:123] [3:true] [4:^##]
-   *
-   * @param objArr 打印多个参数
-   */
-  public static void printObj(Object... objArr) {
-    StringBuffer sb = new StringBuffer();
-    int len = objArr.length;
-    for (int i = 0; i < len; i++) {
-      sb.append("[ ");
-      sb.append(i + 1);
-      sb.append(" : ");
-      sb.append(objArr[i].toString());
-      sb.append(" ] ");
-    }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
-  }
-
-  /**
-   * @return StackTraceElement 转换成 LogPosition
-   */
-  private static LogPosition buildLogPosition() {
-    StackTraceElement element = getTargetStackTraceElement();
-    return new LogPosition(
-        element.getClassName(),
-        element.getFileName(),
-        element.getMethodName(),
-        "" + element.getLineNumber());
-  }
-
-  /**
-   * @return 从堆栈轨迹(StackTraceElement)中获取调用 SLog 的位置信息
-   */
-  private static StackTraceElement getTargetStackTraceElement() {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    int len = stackTrace.length;
-    for (int index = 0; index < len; index++) {
-      //此处判断：遍历找到第一条 SLog 的栈信息，并判断下一条栈信息是否还是 SLog，如果是就继续循环。
-      // 直到找到最后一条 SLog 的栈信息，它的下一条就是 SLog 所在位置的栈信息。
-      if (stackTrace[index].getClassName().equals(SLog.class.getName())
-          && !stackTrace[index + 1].getClassName().equals(SLog.class.getName())) {
-        return stackTrace[index + 1];
+    //配置 SLog 输出开关
+    if (sLogConfiguration.status == SLogStatusEnum.AUTO) {
+      //自动模式下根据BuildType来控制开关。
+      if (BuildConfig.DEBUG) {
+        out = getDebugInstance();
+      } else {
+        out = getReleaseInstance();
       }
+    } else if (sLogConfiguration.status == SLogStatusEnum.ON) {
+      out = getDebugInstance();
+    } else if (sLogConfiguration.status == SLogStatusEnum.OFF) {
+      out = getReleaseInstance();
     }
-    return new StackTraceElement("Not Found", "Not Found",
-        "Not Found", 0);
+  }
+
+  /**
+   * 获得 DebugSLogMethod (拥有真正的打印逻辑)。
+   *
+   * @return
+   */
+  private static SLogMethod getDebugInstance() {
+    if (out == null) {
+      return new DebugSLogMethod();
+    }
+    if (out instanceof DebugSLogMethod) {
+      return out;
+    } else {
+      return new DebugSLogMethod();
+    }
+  }
+
+  /**
+   * 获取 ReleaseSLogMethod (该类的方法都是空方法)。
+   *
+   * @return
+   */
+  private static SLogMethod getReleaseInstance() {
+    if (out == null) {
+      return new ReleaseSLogMethod();
+    }
+    if (out instanceof ReleaseSLogMethod) {
+      return out;
+    } else {
+      return new ReleaseSLogMethod();
+    }
   }
 }

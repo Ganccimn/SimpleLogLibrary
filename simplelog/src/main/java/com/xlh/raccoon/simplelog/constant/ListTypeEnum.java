@@ -1,7 +1,7 @@
-package com.xlh.raccoon.simplelog;
+package com.xlh.raccoon.simplelog.constant;
 
 /**
- * List打印类型
+ * List打印类型。
  */
 public enum ListTypeEnum {
   NORMAL(0, "normal");

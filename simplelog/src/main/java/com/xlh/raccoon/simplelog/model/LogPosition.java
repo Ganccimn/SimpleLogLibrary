@@ -1,4 +1,4 @@
-package com.xlh.raccoon.simplelog;
+package com.xlh.raccoon.simplelog.model;
 
 /**
  * Log打印位置信息实体类。
@@ -9,15 +9,15 @@ public class LogPosition {
    */
   public String className;
   /**
-   * 位置所在java文件名
+   * 位置所在java文件名。
    */
   public String fileName;
   /**
-   * 位置所在的函数名
+   * 位置所在的函数名。
    */
   public String methodName;
   /**
-   * 位置所在java文件的行号
+   * 位置所在java文件的行号。
    */
   public String line;
 
@@ -29,7 +29,7 @@ public class LogPosition {
   }
 
   /**
-   * 打印定位信息(IDE规范，点击能点位到指定位置).
+   * 打印定位信息(IDE规范，点击能点位到指定位置)。
    * 例如：(xxxx.java:12)
    */
   public String getFilePositionString() {

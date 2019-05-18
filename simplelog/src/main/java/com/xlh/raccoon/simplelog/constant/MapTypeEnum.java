@@ -1,7 +1,7 @@
-package com.xlh.raccoon.simplelog;
+package com.xlh.raccoon.simplelog.constant;
 
 /**
- * Map打印类型
+ * Map打印类型。
  */
 public enum MapTypeEnum {
   NORMAL(0, "normal"), TABLE(1, "table");

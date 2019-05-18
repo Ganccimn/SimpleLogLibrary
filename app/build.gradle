@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/gcm/Documents/AndroidStudioProjects/Public')
+            storePassword 'public123'
+            keyPassword 'public123'
+            keyAlias = 'public'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.xlh.raccoon.simpleloglibrary"
@@ -14,6 +22,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
