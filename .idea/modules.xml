@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/SimpleLogLibrary.iml" filepath="$PROJECT_DIR$/SimpleLogLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simplelog/simplelog.iml" filepath="$PROJECT_DIR$/simplelog/simplelog.iml" />
+    </modules>
+  </component>
+</project>
