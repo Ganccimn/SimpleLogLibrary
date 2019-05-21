@@ -3,6 +3,7 @@ package com.xlh.raccoon.simplelog.core;
 import com.xlh.raccoon.simplelog.constant.ListTypeEnum;
 import com.xlh.raccoon.simplelog.constant.MapTypeEnum;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,31 @@ public class ReleaseSLogMethod implements SLogMethod {
 
   @Override
   public void print(Exception ex) {
+
+  }
+
+  @Override
+  public void print(StringBuffer sb) {
+
+  }
+
+  @Override
+  public void print(StringBuilder sb) {
+
+  }
+
+  @Override
+  public void print(String format, Object... objects) {
+
+  }
+
+  @Override
+  public void print(Field field) {
+
+  }
+
+  @Override
+  public void print(Field field, Object obj) {
 
   }
 

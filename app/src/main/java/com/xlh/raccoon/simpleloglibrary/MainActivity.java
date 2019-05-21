@@ -9,6 +9,7 @@ import com.xlh.raccoon.simplelog.config.SLogConfiguration;
 import com.xlh.raccoon.simplelog.constant.ListTypeEnum;
 import com.xlh.raccoon.simplelog.constant.MapTypeEnum;
 import com.xlh.raccoon.simplelog.constant.SLogStatusEnum;
+import com.xlh.raccoon.simplelog.db.SQLiteLogData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,8 @@ public class MainActivity extends AppCompatActivity implements SLogConfig {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     //配置 SLog
-    SLog.init(this);
+    SLog.init(this, this);
+    SQLiteLogData.clear();
     SLog.out.printObj("abcd", 123, true, "^##");
     SLog.out.print(new int[]{1, 2, 3, 4});
     SLog.out.print(new int[][]{
@@ -44,5 +46,6 @@ public class MainActivity extends AppCompatActivity implements SLogConfig {
   @Override
   public void config(SLogConfiguration config) {
     config.status = SLogStatusEnum.AUTO;
+    config.saveLog = true;
   }
 }

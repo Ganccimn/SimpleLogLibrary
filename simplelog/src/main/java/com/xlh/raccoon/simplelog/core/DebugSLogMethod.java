@@ -2,10 +2,13 @@ package com.xlh.raccoon.simplelog.core;
 
 import android.util.Log;
 
+import com.xlh.raccoon.simplelog.SLog;
 import com.xlh.raccoon.simplelog.constant.ListTypeEnum;
 import com.xlh.raccoon.simplelog.constant.MapTypeEnum;
-import com.xlh.raccoon.simplelog.model.LogPosition;
+import com.xlh.raccoon.simplelog.db.SLogPosition;
+import com.xlh.raccoon.simplelog.db.SQLiteLogData;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +17,29 @@ public class DebugSLogMethod implements SLogMethod {
   private static final String TAG = DebugSLogMethod.class.getName();
 
   /**
+   * 扩展输出逻辑。
+   *
+   * @param msg
+   * @return
+   */
+  public String outPrint(String msg) {
+    SLogPosition position = buildLogPosition();
+    String positionStr = position.getFilePositionString();
+    Log.i(positionStr, msg);
+    String out = String.format("%s : %s", position, msg);
+    if (SLog.configuration.saveLog) {
+      SQLiteLogData logData = new SQLiteLogData(position, msg);
+      logData.save();
+    }
+    return out;
+  }
+
+  /**
    * @param msg 打印字符串。
    */
   @Override
   public void print(String msg) {
-    Log.i(buildLogPosition().getFilePositionString(), msg);
+    outPrint(msg);
   }
 
   /**
@@ -36,7 +57,7 @@ public class DebugSLogMethod implements SLogMethod {
     }
     sb.setLength(sb.length() - 3);
     sb.append(" ]");
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
+    outPrint(sb.toString());
   }
 
   /**
@@ -56,7 +77,7 @@ public class DebugSLogMethod implements SLogMethod {
       sb.setLength(sb.length() - 3);
       sb.append(" ]\n");
     }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
+    outPrint(sb.toString());
   }
 
   /**
@@ -68,7 +89,7 @@ public class DebugSLogMethod implements SLogMethod {
   @Override
   public void print(List list, ListTypeEnum listTypeEnum) {
     if (listTypeEnum.flag == ListTypeEnum.NORMAL.flag) {
-      Log.i(buildLogPosition().getFilePositionString(), list.toString());
+      outPrint(list.toString());
     }
   }
 
@@ -83,7 +104,7 @@ public class DebugSLogMethod implements SLogMethod {
     if (mapTypeEnum == MapTypeEnum.TABLE) {
       printMapTable(map);
     } else {
-      Log.i(buildLogPosition().getFilePositionString(), map.toString());
+      outPrint(map.toString());
     }
   }
 
@@ -95,6 +116,75 @@ public class DebugSLogMethod implements SLogMethod {
   @Override
   public void print(Exception ex) {
     print(ex.getMessage());
+  }
+
+  /**
+   * @param sb
+   */
+  @Override
+  public void print(StringBuffer sb) {
+    if (sb != null) {
+      outPrint(sb.toString());
+    } else {
+      outPrint("StringBuffer is null");
+    }
+  }
+
+  /**
+   * @param sb
+   */
+  @Override
+  public void print(StringBuilder sb) {
+    if (sb != null) {
+      outPrint(sb.toString());
+    } else {
+      outPrint("StringBuilder is null");
+    }
+  }
+
+  /**
+   * 格式化输出。
+   *
+   * @param format
+   * @param objects
+   */
+  @Override
+  public void print(String format, Object... objects) {
+    outPrint(String.format(format, objects));
+  }
+
+  /**
+   * 打印字段类型。
+   *
+   * @param field
+   */
+  @Override
+  public void print(Field field) {
+    if (field == null) {
+      outPrint("Field is null");
+      return;
+    }
+    print("Field Type:%s", field.getGenericType());
+  }
+
+  /**
+   * 打印字段信息。
+   *
+   * @param field
+   */
+  @Override
+  public void print(Field field, Object obj) {
+    if (field == null) {
+      outPrint("Field is null");
+      return;
+    }
+    String val = "null";
+    try {
+      val = field.get(obj).toString();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    print("Type:%s Value:%s", field.getGenericType(), val);
   }
 
   /**
@@ -111,7 +201,7 @@ public class DebugSLogMethod implements SLogMethod {
       sb.append(entry.getValue());
       sb.append(" ]\n");
     }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
+    outPrint(sb.toString());
   }
 
   /**
@@ -130,15 +220,15 @@ public class DebugSLogMethod implements SLogMethod {
       sb.append(objArr[i].toString());
       sb.append(" ] ");
     }
-    Log.i(buildLogPosition().getFilePositionString(), sb.toString());
+    outPrint(sb.toString());
   }
 
   /**
-   * @return StackTraceElement 转换成 LogPosition
+   * @return StackTraceElement 转换成 SLogPosition
    */
-  private static LogPosition buildLogPosition() {
+  private static SLogPosition buildLogPosition() {
     StackTraceElement element = getTargetStackTraceElement();
-    return new LogPosition(
+    return new SLogPosition(
         element.getClassName(),
         element.getFileName(),
         element.getMethodName(),

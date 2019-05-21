@@ -1,9 +1,9 @@
-package com.xlh.raccoon.simplelog.model;
+package com.xlh.raccoon.simplelog.db;
 
 /**
  * Log打印位置信息实体类。
  */
-public class LogPosition {
+public class SLogPosition extends SQLiteCore {
   /**
    * 位置所在的类名。
    */
@@ -21,7 +21,7 @@ public class LogPosition {
    */
   public String line;
 
-  public LogPosition(String className, String fileName, String methodName, String line) {
+  public SLogPosition(String className, String fileName, String methodName, String line) {
     this.className = className;
     this.fileName = fileName;
     this.methodName = methodName;
