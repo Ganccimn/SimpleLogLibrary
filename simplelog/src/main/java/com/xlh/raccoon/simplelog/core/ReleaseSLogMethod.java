@@ -12,6 +12,26 @@ import java.util.Map;
  */
 public class ReleaseSLogMethod implements SLogMethod {
   @Override
+  public void print(int num) {
+
+  }
+
+  @Override
+  public void print(float num) {
+
+  }
+
+  @Override
+  public void print(long num) {
+
+  }
+
+  @Override
+  public void print(double num) {
+
+  }
+
+  @Override
   public void print(String msg) {
 
   }
@@ -32,7 +52,17 @@ public class ReleaseSLogMethod implements SLogMethod {
   }
 
   @Override
+  public void print(List list) {
+    
+  }
+
+  @Override
   public void print(Map map, MapTypeEnum mapTypeEnum) {
+
+  }
+
+  @Override
+  public void print(Map map) {
 
   }
 

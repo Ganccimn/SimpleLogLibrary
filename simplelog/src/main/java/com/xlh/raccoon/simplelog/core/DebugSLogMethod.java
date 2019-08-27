@@ -34,6 +34,26 @@ public class DebugSLogMethod implements SLogMethod {
     return out;
   }
 
+  @Override
+  public void print(int num) {
+    outPrint(num + "");
+  }
+
+  @Override
+  public void print(float num) {
+    outPrint(num + "");
+  }
+
+  @Override
+  public void print(long num) {
+    outPrint(num + "");
+  }
+
+  @Override
+  public void print(double num) {
+    outPrint(num + "");
+  }
+
   /**
    * @param msg 打印字符串。
    */
@@ -93,6 +113,11 @@ public class DebugSLogMethod implements SLogMethod {
     }
   }
 
+  @Override
+  public void print(List list) {
+    outPrint(list.toString());
+  }
+
   /**
    * 打印集合。
    *
@@ -106,6 +131,11 @@ public class DebugSLogMethod implements SLogMethod {
     } else {
       outPrint(map.toString());
     }
+  }
+
+  @Override
+  public void print(Map map) {
+    outPrint(map.toString());
   }
 
   /**

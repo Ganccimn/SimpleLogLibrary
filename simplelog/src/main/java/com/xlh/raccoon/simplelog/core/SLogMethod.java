@@ -11,6 +11,15 @@ import java.util.Map;
  * SLog 方法接口。
  */
 public interface SLogMethod {
+
+  void print(int num);
+
+  void print(float num);
+
+  void print(long num);
+
+  void print(double num);
+
   /**
    * @param msg 打印字符串。
    */
@@ -38,6 +47,8 @@ public interface SLogMethod {
    */
   void print(List list, ListTypeEnum listTypeEnum);
 
+  void print(List list);
+
   /**
    * 打印集合。
    *
@@ -45,6 +56,8 @@ public interface SLogMethod {
    * @param mapTypeEnum
    */
   void print(Map map, MapTypeEnum mapTypeEnum);
+
+  void print(Map map);
 
   /**
    * 打印异常。

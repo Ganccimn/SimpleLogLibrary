@@ -36,11 +36,13 @@ public class MainActivity extends AppCompatActivity implements SLogConfig {
     list.add(1);
     list.add(45);
     SLog.out.print(list, ListTypeEnum.NORMAL);
+    SLog.out.print(list);
     Map<String, Boolean> map = new HashMap<>();
     map.put("xx", false);
     map.put("yy", true);
     map.put("zz", null);
     SLog.out.print(map, MapTypeEnum.TABLE);
+    SLog.out.print(map);
   }
 
   @Override
