@@ -26,7 +26,7 @@ public class DebugSLogMethod implements SLogMethod {
     SLogPosition position = buildLogPosition();
     String positionStr = position.getFilePositionString();
     Log.i(positionStr, msg);
-    String out = String.format("%s : %s", position, msg);
+    String out = String.format("%s: %s", positionStr, msg);
     if (SLog.configuration.saveLog) {
       SQLiteLogData logData = new SQLiteLogData(position, msg);
       logData.save();

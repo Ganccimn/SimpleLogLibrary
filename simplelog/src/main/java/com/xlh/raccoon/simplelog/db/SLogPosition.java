@@ -33,7 +33,7 @@ public class SLogPosition extends SQLiteCore {
    * 例如：(xxxx.java:12)
    */
   public String getFilePositionString() {
-    return String.format("(%s:%s)", fileName, line);
+    return String.format("(%s:%s) %s()", fileName, line, methodName);
   }
 
   /**
