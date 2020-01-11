@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public interface SLogMethod {
 
+  void print();
+
   void print(int num);
 
   void print(float num);

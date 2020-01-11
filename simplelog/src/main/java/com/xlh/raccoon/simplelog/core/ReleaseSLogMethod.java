@@ -12,6 +12,11 @@ import java.util.Map;
  */
 public class ReleaseSLogMethod implements SLogMethod {
   @Override
+  public void print() {
+
+  }
+
+  @Override
   public void print(int num) {
 
   }

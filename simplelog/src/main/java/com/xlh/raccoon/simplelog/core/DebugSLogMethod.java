@@ -1,5 +1,6 @@
 package com.xlh.raccoon.simplelog.core;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.xlh.raccoon.simplelog.SLog;
@@ -23,6 +24,9 @@ public class DebugSLogMethod implements SLogMethod {
    * @return
    */
   public String outPrint(String msg) {
+    if (TextUtils.isEmpty(msg)) {
+      msg = "null | empty";
+    }
     SLogPosition position = buildLogPosition();
     String positionStr = position.getFilePositionString();
     Log.i(positionStr, msg);
@@ -32,6 +36,11 @@ public class DebugSLogMethod implements SLogMethod {
       logData.save();
     }
     return out;
+  }
+
+  @Override
+  public void print() {
+    outPrint("======tag======");
   }
 
   @Override
